@@ -37,4 +37,15 @@ contract crowdfunding {
     function getContractBal() public view returns (uint) {
         return address(this).balance;
     }
+
+    function refundAmount() public payable {
+        require(
+            block.timestamp > deadline && raisedAmount < target,
+            "You are not eligible for refund"
+        );
+        require(contributors[msg.sender] > 0);
+        address payable user = payable(msg.sender);
+        user.transfer(contributors[msg.sender]);
+        contributors[msg.sender] = 0;
+    }
 }
